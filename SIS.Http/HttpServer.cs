@@ -62,7 +62,11 @@ namespace SIS.Http
             response.Headers.Add(new Header("Server", "ZTech Server"));
             response.Headers.Add(new Header("Content-Type", "text/html"));
 
-            byte[] responseBytes = Encoding.UTF8.GetBytes(response.ToString()); 
+            response.Cookies.Add(
+                        new ResponseCookie("sid",Guid.NewGuid().ToString())
+                        { HttpOnly = true, MaxAge = 30 * 3600, });
+
+            byte[] responseBytes = Encoding.UTF8.GetBytes(response.ToString());
             await networkStream.WriteAsync(responseBytes, 0, responseBytes.Length);
             await networkStream.WriteAsync(response.Body, 0, response.Body.Length);
 
