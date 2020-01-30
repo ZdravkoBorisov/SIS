@@ -10,6 +10,7 @@ namespace SIS.Http
         public HttpRequest(string httpRequestAsString)
         {
             this.Headers = new List<Header>();
+            this.Cookies = new List<Cookie>();
 
             var reader = new StringReader(httpRequestAsString);
 
@@ -69,6 +70,23 @@ namespace SIS.Http
                     }
 
                     var header = new Header(headerParts[0], headerParts[1]);
+
+                    if (headerParts[0] == "Cookie")
+                    {
+                        var cookieString = headerParts[1];
+                        var cookies = cookieString.Split(new[] { "; " }, StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (var cookieAsString in cookies)
+                        {
+                            var cookieParts = cookieAsString.Split(new char[] { '=' }, 2);
+
+                            if (cookieParts.Length == 2)
+                            {
+                                this.Cookies.Add(new Cookie(cookieParts[0], cookieParts[1]));
+                            }
+                        }
+                    }
+
                     this.Headers.Add(header);
                 }
 
@@ -85,6 +103,8 @@ namespace SIS.Http
         public HttpVersionType Version { get; set; }
 
         public IList<Header> Headers { get; set; }
+
+        public IList<Cookie> Cookies { get; set; }
 
         public string Body { get; set; }
 
