@@ -1,3 +1,2 @@
-# SIS
-SIS MVC Framework
-Workshop
+# Softuni Information Services
+Simple HTTP Server
